@@ -50,4 +50,40 @@ router.post('/register', [
     }
 });
 
+
+router.post('/user/login', function (req, res) {
+    const Phonenumber = req.body.Phonenumber;
+    const password = req.body.password;
+    User.findOne({ Phonenumber: Phonenumber })
+        .then(function (userData) {
+            if (userData === null) {
+                // username false
+                return res.status(401).json({ message: "Invalid credentials!!" })
+            }
+            // if username exists
+            bcryptjs.compare(password, userData.password, function (err, result) {
+                if (result === false) {
+                    // password wrong
+                    return res.status(401).json({ message: "Invalid credentials!!" })
+                }
+                // all good
+                // then generate token - ticket
+                const token = jwt.sign({ userId: userData._id }, 'anysecretkey');
+                //  res.send(token)
+                return res.status(200).json({
+
+                    success: true,
+                    token: token,
+                    id: userData._id
+                })
+            })
+
+        })
+        .catch(function (e) {
+            res.status(500).json({ message: e })
+        })
+
+})
+
+
 module.exports = router;
