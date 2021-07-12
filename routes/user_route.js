@@ -88,5 +88,17 @@ router.post('/user/login', function (req, res) {
 
 })
 
+router.get("/user/single", auth.verifyUser, function (req, res) {
+    console.log('.')
+    const id = req.user._id;
+    User.findOne({ _id: id }).then(
+        function (data) {
+            res.status(200).json({ success: true, Fullname: data.Fullname, PhoneNumber : data.Phonenumber, Address: data.Address})
+        })
+        .catch(function () {
+            res.status(500).json({ error: e })
+        })
+});
+
 
 module.exports = router;
