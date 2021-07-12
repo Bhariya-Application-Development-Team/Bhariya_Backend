@@ -58,15 +58,18 @@ router.post('/user/login', function (req, res) {
         .then(function (userData) {
             if (userData === null) {
                 // username false
+                console.log("Username doesn't exsit!")
                 return res.status(401).json({ message: "Invalid credentials!!" })
             }
             // if username exists
             bcryptjs.compare(password, userData.password, function (err, result) {
                 if (result === false) {
                     // password wrong
+                    console.log("password  Incorrect!")
                     return res.status(401).json({ message: "Invalid credentials!!" })
                 }
                 // all good
+                console.log("Login Sucessful!")
                 // then generate token - ticket
                 const token = jwt.sign({ userId: userData._id }, 'anysecretkey');
                 //  res.send(token)
