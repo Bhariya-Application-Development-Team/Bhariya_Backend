@@ -85,5 +85,25 @@ router.post('/user/login', function (req, res) {
 
 })
 
+router.put("/user/password/reset",function(req,res){
+    const phonenumber = req.body.phonenumber
+    const new_password = req.body.password
+
+    bcryptjs.hash(new_password, 10, function (err, hash) {
+    User.updateOne({phonenumber : phonenumber},{password : hash})
+    .then(function(){
+        console.log("Successfully Changed")
+        res.status(200).json({success: true})
+    })
+    .catch(function(err){
+        console.log(err)
+        res.status(500).json({error: err})
+    })
+})
+
+
+
+})
+
 
 module.exports = router;
