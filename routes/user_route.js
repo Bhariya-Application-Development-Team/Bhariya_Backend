@@ -9,13 +9,13 @@ const jwt = require("jsonwebtoken");
 
 
 router.post('/register', [
-    check('Fullname', 'Fullname is required !').not().isEmpty(),
-    check('Address', 'Address is required !').not().isEmpty(),
-    check('Phonenumber', 'Phone Number is required !').not().isEmpty(),
-    check('password', 'Password is required !').not().isEmpty(),
-    check('Role', 'Your Role is required !').not().isEmpty()
+    // check('Fullname', 'Fullname is required !').not().isEmpty(),
+    // check('Address', 'Address is required !').not().isEmpty(),
+    // check('Phonenumber', 'Phone Number is required !').not().isEmpty(),
+    // check('password', 'Password is required !').not().isEmpty(),
+    // check('Role', 'Your Role is required !').not().isEmpty()
 ], upload.single('image'), function (req, res) {
-    console.log(req.body)
+
     const errors = validationResult(req);
 
     if (errors.isEmpty()) {
@@ -23,7 +23,7 @@ router.post('/register', [
         const Address = req.body.Address;
         const Phonenumber = req.body.Phonenumber;
         const password = req.body.password;
-        const Role = req.body.role;
+        const Role = req.body.Role;
         const image = "";
         bcryptjs.hash(password, 10, function (err, hash) {
             const data = new User({
@@ -93,7 +93,7 @@ router.get("/user/single", auth.verifyUser, function (req, res) {
     const id = req.user._id;
     User.findOne({ _id: id }).then(
         function (data) {
-            res.status(200).json({ success: true, Fullname: data.Fullname, PhoneNumber : data.Phonenumber, Address: data.Address})
+            res.status(200).json({ success: true, Fullname: data.Fullname, PhoneNumber : data.Phonenumber, Address: data.Address, image: data.image})
         })
         .catch(function () {
             res.status(500).json({ error: e })
@@ -145,6 +145,27 @@ router.put('/user/profilepicture', auth.verifyUser,  upload.single('image'), fun
 
 
 })
+
+// editing profile picture
+
+
+router.put('/user/updateprofile', auth.verifyUser,  function (req, res) {
+
+    const Fullname = req.body.Fullname;
+    const Address = req.body.Address;
+    const id = req.user._id;
+    User.updateOne({ _id: id },
+        { Fullname: Fullname, Address: Address })
+        .then(
+            function (data) {
+                console.log("updated")
+                res.status(200).json({ message: "Successfully Updated", success:true })
+            })
+        .catch(function (e) {
+            console.log(e)
+            res.status(500).json({ error: e.message })
+        })
+});
 
 
 module.exports = router;
