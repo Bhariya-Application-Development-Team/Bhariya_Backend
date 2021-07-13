@@ -97,5 +97,30 @@ router.get("/user/single", auth.verifyUser, function (req, res) {
         })
 });
 
+// Updating profile picture
+
+router.put('/user/profilepicture', auth.verifyUser,  upload.single('image'), function (req, res) {
+    console.log("hit");
+    if (req.file == undefined) {
+        console.log(req.file)
+        return res.status(400).json({
+            message: 'Invalid File Format!'
+        })
+    }
+    const image = req.file.path;
+    const id = req.user._id;
+    Customer.updateOne({ _id: id },
+        { image: image})
+        .then(
+            function (data) {
+                console.log("updated")
+                res.status(200).json({ message: "Profile Picture Updated", user: data.image, success:true })
+            })
+        .catch(function (e) {
+            console.log(e)
+            res.status(500).json({ error: e.message })
+        })
+});
+
 
 module.exports = router;
