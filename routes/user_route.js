@@ -101,11 +101,12 @@ router.get("/user/single", auth.verifyUser, function (req, res) {
 });
 
 router.put("/user/password/reset",function(req,res){
+  
     const phonenumber = req.body.phonenumber
-    const new_password = req.body.password
+    const password = req.body.password
 
-    bcryptjs.hash(new_password, 10, function (err, hash) {
-    User.updateOne({phonenumber : phonenumber},{password : hash})
+    bcryptjs.hash(password, 10, function (err, hash) {
+    User.updateOne({Phonenumber : phonenumber},{password : hash})
     .then(function(){
         console.log("Successfully Changed")
         res.status(200).json({success: true})
