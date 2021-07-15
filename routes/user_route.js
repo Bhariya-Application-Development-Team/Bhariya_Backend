@@ -105,9 +105,10 @@ router.put("/user/password/reset",function(req,res){
     const new_password = req.body.password
 
     bcryptjs.hash(new_password, 10, function (err, hash) {
-    User.updateOne({phonenumber : phonenumber},{password : hash})
+    User.updateOne({Phonenumber : phonenumber},{password : hash})
     .then(function(){
         console.log("Successfully Changed")
+        console.log(phonenumber,"|||",new_password)
         res.status(200).json({success: true})
     })
     .catch(function(err){
@@ -118,6 +119,22 @@ router.put("/user/password/reset",function(req,res){
 
 
 
+})
+
+router.put("/user/update",function(req,res){
+    const id = req.body.id
+    const fullname = req.body.Fullname
+    const address = req.body.Address
+    const phonenumber = req.body.Phonenumber
+
+    User.updateOne({Phonenumber : id},{Fullname : fullname, Address : address, Phonenumber : phonenumber})
+    .then(function(){
+        console.log(id, fullname, address, phonenumber)
+        res.status(200).json({success:true})
+    })
+    .catch(function(err){
+        console.status(500).json({message : err})
+    })
 })
 
 
