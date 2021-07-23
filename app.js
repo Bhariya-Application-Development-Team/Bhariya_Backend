@@ -5,6 +5,7 @@ const cors = require('cors');
 const  bodyParser = require('body-parser')   //no need to install  use app.use(body praiser also)
 const db = require('./Database/db');
 const userroute = require('./routes/user_route');
+const driverroute = require('./routes/driver_route')
 
 const app = express(); // third party
 app.use(cors());
@@ -16,7 +17,7 @@ app.set('view engine', 'hbs');
 const publicDir = path.join(__dirname, 'pictures');
 app.use("/pictures",express.static(publicDir));
 app.use(userroute);
-
+app.use(driverroute);
 
 app.listen(3000, (err)=> {
     console.log("started at http://localhost:3000/")

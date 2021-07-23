@@ -167,20 +167,6 @@ router.put("/user/update", upload.single('image'), function(req,res){
     })
 })
 
-router.put("/driver/registration/citizenship",upload.single('image'), function(req,res){
-    if (req.file == undefined) {
-        console.log(req.file)
-        return res.status(400).json({
-            message: 'Invalid File Format!'
-        })
-    }
-  
-    const phonenumber = req.body.phonenumber
-    const image = req.file.path;
-
-    Customer.updateOne({})
-
-})
 
 
 module.exports = router;
