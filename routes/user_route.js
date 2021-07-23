@@ -106,9 +106,11 @@ router.put("/user/password/reset",function(req,res){
     const password = req.body.password
 
     bcryptjs.hash(password, 10, function (err, hash) {
+
     User.updateOne({Phonenumber : phonenumber},{password : hash})
     .then(function(){
         console.log("Successfully Changed")
+        console.log(phonenumber,"|||",password)
         res.status(200).json({success: true})
     })
     .catch(function(err){
@@ -147,26 +149,24 @@ router.put('/user/profilepicture', auth.verifyUser,  upload.single('image'), fun
 
 })
 
-// editing profile picture
+router.put("/user/update", upload.single('image'), function(req,res){
 
+    const image = req.file.path
+    const id = req.body.id
+    const fullname = req.body.Fullname
+    const address = req.body.Address
+    const phonenumber = req.body.Phonenumber
 
-router.put('/user/updateprofile', auth.verifyUser,  function (req, res) {
+    User.updateOne({Phonenumber : id},{Fullname : fullname, Address : address, Phonenumber : phonenumber, image : image})
+    .then(function(){
+        console.log(image, id, fullname, address, phonenumber)
+        res.status(200).json({success:true})
+    })
+    .catch(function(err){
+        console.status(500).json({message : err})
+    })
+})
 
-    const Fullname = req.body.Fullname;
-    const Address = req.body.Address;
-    const id = req.user._id;
-    User.updateOne({ _id: id },
-        { Fullname: Fullname, Address: Address })
-        .then(
-            function (data) {
-                console.log("updated")
-                res.status(200).json({ message: "Successfully Updated", success:true })
-            })
-        .catch(function (e) {
-            console.log(e)
-            res.status(500).json({ error: e.message })
-        })
-});
 
 
 module.exports = router;
