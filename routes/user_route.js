@@ -9,13 +9,13 @@ const jwt = require("jsonwebtoken");
 
 
 router.post('/register', [
-    check('Fullname', 'Fullname is required !').not().isEmpty(),
-    check('Address', 'Address is required !').not().isEmpty(),
-    check('Phonenumber', 'Phone Number is required !').not().isEmpty(),
-    check('password', 'Password is required !').not().isEmpty(),
-    check('Role', 'Your Role is required !').not().isEmpty()
+    // check('Fullname', 'Fullname is required !').not().isEmpty(),
+    // check('Address', 'Address is required !').not().isEmpty(),
+    // check('Phonenumber', 'Phone Number is required !').not().isEmpty(),
+    // check('password', 'Password is required !').not().isEmpty(),
+    // check('Role', 'Your Role is required !').not().isEmpty()
 ], upload.single('image'), function (req, res) {
-    console.log(req.body)
+
     const errors = validationResult(req);
 
     if (errors.isEmpty()) {
@@ -23,7 +23,7 @@ router.post('/register', [
         const Address = req.body.Address;
         const Phonenumber = req.body.Phonenumber;
         const password = req.body.password;
-        const Role = req.body.role;
+        const Role = req.body.Role;
         const image = "";
         bcryptjs.hash(password, 10, function (err, hash) {
             const data = new User({
@@ -58,15 +58,18 @@ router.post('/user/login', function (req, res) {
         .then(function (userData) {
             if (userData === null) {
                 // username false
+                console.log("Username doesn't exsit!")
                 return res.status(401).json({ message: "Invalid credentials!!" })
             }
             // if username exists
             bcryptjs.compare(password, userData.password, function (err, result) {
                 if (result === false) {
                     // password wrong
+                    console.log("password  Incorrect!")
                     return res.status(401).json({ message: "Invalid credentials!!" })
                 }
                 // all good
+                console.log("Login Sucessful!")
                 // then generate token - ticket
                 const token = jwt.sign({ userId: userData._id }, 'anysecretkey');
                 //  res.send(token)
@@ -90,7 +93,7 @@ router.get("/user/single", auth.verifyUser, function (req, res) {
     const id = req.user._id;
     User.findOne({ _id: id }).then(
         function (data) {
-            res.status(200).json({ success: true, Fullname: data.Fullname, PhoneNumber : data.Phonenumber, Address: data.Address})
+            res.status(200).json({ success: true, Fullname: data.Fullname, PhoneNumber : data.Phonenumber, Address: data.Address, image: data.image})
         })
         .catch(function () {
             res.status(500).json({ error: e })
@@ -99,6 +102,27 @@ router.get("/user/single", auth.verifyUser, function (req, res) {
 
 // Updating profile picture
 
+router.put("/user/password/reset",function(req,res){
+  
+    const phonenumber = req.body.phonenumber
+    const password = req.body.password
+
+    bcryptjs.hash(password, 10, function (err, hash) {
+
+    User.updateOne({Phonenumber : phonenumber},{password : hash})
+    .then(function(){
+        console.log("Successfully Changed")
+        console.log(phonenumber,"|||",password)
+        res.status(200).json({success: true})
+    })
+    .catch(function(err){
+        console.log(err)
+        res.status(500).json({error: err})
+    })
+})
+
+
+//updating profile picture
 router.put('/user/profilepicture', auth.verifyUser,  upload.single('image'), function (req, res) {
     console.log("hit");
     if (req.file == undefined) {
@@ -115,12 +139,44 @@ router.put('/user/profilepicture', auth.verifyUser,  upload.single('image'), fun
             function (data) {
                 console.log("updated")
                 res.status(200).json({ message: "Profile Picture Updated", user: data.image, success:true })
+  
+    const image = req.file.path;
+    const id = req.user._id;
+    Customer.updateOne({ _id: id },
+        { image: image })
+        .then(
+            function (data) {
+                console.log("updated")
+                res.status(200).json({ message: "Updated profile picture", user: data.image, success:true })
             })
         .catch(function (e) {
             console.log(e)
             res.status(500).json({ error: e.message })
         })
 });
+
+
+
+})
+
+router.put("/user/update", upload.single('image'), function(req,res){
+
+    const image = req.file.path
+    const id = req.body.id
+    const fullname = req.body.Fullname
+    const address = req.body.Address
+    const phonenumber = req.body.Phonenumber
+
+    User.updateOne({Phonenumber : id},{Fullname : fullname, Address : address, Phonenumber : phonenumber, image : image})
+    .then(function(){
+        console.log(image, id, fullname, address, phonenumber)
+        res.status(200).json({success:true})
+    })
+    .catch(function(err){
+        console.status(500).json({message : err})
+    })
+})
+
 
 
 module.exports = router;
