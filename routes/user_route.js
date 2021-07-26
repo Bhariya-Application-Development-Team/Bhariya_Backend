@@ -164,7 +164,7 @@ router.put("/user/update", upload.single('image'), function(req,res){
 
     const image = (req.file.path).replace(/['"]+/g, '')
     const temp = (req.body.id)
-    id = (temp.replace(/['"]+/g, ''))
+    const id = (temp.replace(/['"]+/g, ''))
     const fullname = (req.body.Fullname).replace(/['"]+/g, '')
     const address = (req.body.Address).replace(/['"]+/g, '')
     const phonenumber = (req.body.Phonenumber).replace(/['"]+/g, '')
@@ -176,6 +176,25 @@ router.put("/user/update", upload.single('image'), function(req,res){
     })
     .catch(function(err){
         console.status(500).json({message : err})
+    })
+})
+
+router.put("/user/updateText",function(req,res){
+
+    console.log(req.body.id)
+    const temp = req.body.id
+    const id = (temp.replace(/['"]+/g, ''))
+    const fullname = (req.body.Fullname).replace(/['"]+/g, '')
+    const address = (req.body.Address).replace(/['"]+/g, '')
+    const phonenumber = (req.body.Phonenumber).replace(/['"]+/g, '')
+
+    User.updateOne({Phonenumber : id},{Fullname : fullname, Address : address, Phonenumber : phonenumber})
+    .then(function(){
+        console.log(image, id, fullname, address, phonenumber)
+        res.status(200).json({success:true})
+    })
+    .catch(function(err){
+        res.status(500).json({message : err})
     })
 })
 
