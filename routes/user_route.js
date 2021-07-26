@@ -132,6 +132,7 @@ router.put('/user/profilepicture', auth.verifyUser,  upload.single('image'), fun
   
     const image = req.file.path;
     const id = req.user._id;
+    id = (temp.replace(/['"]+/g, ''))
     Customer.updateOne({ _id: id },
         { image: image })
         .then(
@@ -151,11 +152,12 @@ router.put('/user/profilepicture', auth.verifyUser,  upload.single('image'), fun
 
 router.put("/user/update", upload.single('image'), function(req,res){
 
-    const image = req.file.path
-    const id = req.body.id
-    const fullname = req.body.Fullname
-    const address = req.body.Address
-    const phonenumber = req.body.Phonenumber
+    const image = (req.file.path).replace(/['"]+/g, '')
+    const temp = (req.body.id)
+    id = (temp.replace(/['"]+/g, ''))
+    const fullname = (req.body.Fullname).replace(/['"]+/g, '')
+    const address = (req.body.Address).replace(/['"]+/g, '')
+    const phonenumber = (req.body.Phonenumber).replace(/['"]+/g, '')
 
     User.updateOne({Phonenumber : id},{Fullname : fullname, Address : address, Phonenumber : phonenumber, image : image})
     .then(function(){
