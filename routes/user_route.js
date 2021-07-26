@@ -100,6 +100,8 @@ router.get("/user/single", auth.verifyUser, function (req, res) {
         })
 });
 
+// Updating profile picture
+
 router.put("/user/password/reset",function(req,res){
   
     const phonenumber = req.body.phonenumber
@@ -129,6 +131,14 @@ router.put('/user/profilepicture', auth.verifyUser,  upload.single('image'), fun
             message: 'Invalid File Format!'
         })
     }
+    const image = req.file.path;
+    const id = req.user._id;
+    Customer.updateOne({ _id: id },
+        { image: image})
+        .then(
+            function (data) {
+                console.log("updated")
+                res.status(200).json({ message: "Profile Picture Updated", user: data.image, success:true })
   
     const image = req.file.path;
     const id = req.user._id;
