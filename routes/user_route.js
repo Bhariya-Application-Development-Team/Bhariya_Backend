@@ -197,6 +197,9 @@ router.put("/user/updateText",function(req,res){
         res.status(500).json({message : err})
     })
 })
+})
+
+
 
 
 
