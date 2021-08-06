@@ -73,6 +73,18 @@ router.put('/driver/registration/citizenship',upload.single('image'), function(r
 
 });
 
+//show
+router.get('/driver/show', function(req, res){
+    Driver.find()
+    .then(function(data){
+        res.status(200).json(data)
+
+    })
+    .catch(function(e){
+        res.status(500).json({error : e})
+    })
+})
+
 router.put('/driver/registration/license',upload.single('image'), function(req,res){
     if (req.file == undefined) {
         console.log(req.file)
