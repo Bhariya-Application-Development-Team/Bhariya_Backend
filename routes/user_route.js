@@ -179,6 +179,18 @@ router.put("/user/update", upload.single('image'), function(req,res){
     })
 })
 
+//show
+router.get('/customer-details/show', function(req, res){
+    User.find()
+    .then(function(data){
+        res.status(200).json(data)
+
+    })
+    .catch(function(e){
+        res.status(500).json({error : e})
+    })
+})
+
 router.put("/user/updateText",function(req,res){
 
     console.log(req.body.id)

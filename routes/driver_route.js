@@ -74,7 +74,7 @@ router.put('/driver/registration/citizenship',upload.single('image'), function(r
 });
 
 //show
-router.get('/driver/show', function(req, res){
+router.get('/driver-details/show', function(req, res){
     Driver.find()
     .then(function(data){
         res.status(200).json(data)
