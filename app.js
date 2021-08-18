@@ -6,6 +6,7 @@ const  bodyParser = require('body-parser')   //no need to install  use app.use(b
 const db = require('./Database/db');
 const userroute = require('./routes/user_route');
 const driverroute = require('./routes/driver_route')
+const feedbackroute = require('./routes/feedback_route')
 
 const app = express(); // third party
 app.use(cors());
@@ -18,6 +19,7 @@ const publicDir = path.join(__dirname, 'pictures');
 app.use("/pictures",express.static(publicDir));
 app.use(userroute);
 app.use(driverroute);
+app.use(feedbackroute);
 
 app.listen(3000, (err)=> {
     console.log("started at http://localhost:3000/")
