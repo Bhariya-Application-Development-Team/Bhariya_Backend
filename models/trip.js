@@ -12,7 +12,7 @@ const Trip = mongoose.model('Trip',{
         type : String,
         required : true
     },
-    cost:{
+    Cost:{
         type : String,
         default : "empty"
     },
@@ -24,7 +24,7 @@ const Trip = mongoose.model('Trip',{
         type: String,
         required : true
     },
-    status:{
+    Status:{
         type: String,
         required : true
     },
