@@ -29,10 +29,10 @@ router.post('/feedback_insert', function(req,res){
 })
 
 router.get('/user_id_load/:id',function(req,res){
-    const user_id = req.params.id
-    console.log(user_id)
+    const _id = req.params.id
+    console.log(_id)
     
-    Feedback.find({user_id:user_id})
+    Feedback.findOne({_id:_id})
     .then(function(data){
         res.status(200).json(data)
         console.log(data)
