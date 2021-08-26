@@ -4,6 +4,7 @@ const express = require('express'); //install first
 const cors = require('cors');
 const  bodyParser = require('body-parser')   //no need to install  use app.use(body praiser also)
 const db = require('./Database/db');
+const tripRoute = require('./routes/trip_route')
 const userroute = require('./routes/user_route');
 const driverroute = require('./routes/driver_route')
 const feedbackroute = require('./routes/feedback_route')
@@ -20,6 +21,7 @@ app.use("/pictures",express.static(publicDir));
 app.use(userroute);
 app.use(driverroute);
 app.use(feedbackroute);
+app.use(tripRoute);
 
 app.listen(3000, (err)=> {
     console.log("started at http://localhost:3000/")
