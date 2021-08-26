@@ -23,8 +23,8 @@ app.use(driverroute);
 app.use(feedbackroute);
 app.use(tripRoute);
 
-app.listen(3000, (err)=> {
-    console.log("started at http://localhost:3000/")
-})
+app.listen(process.env.PORT || 3000, () => {
+    console.log("Server is running on!");
+  });
 
 
