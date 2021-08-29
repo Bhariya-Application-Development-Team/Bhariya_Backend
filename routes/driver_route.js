@@ -7,20 +7,15 @@ const upload = require('../middleware/uploads');
 const auth = require('../middleware/auth');
 const jwt = require("jsonwebtoken");
 
-router.post('/driver/register', [
-    // check('Fullname', 'Fullname is required !').not().isEmpty(),
-    // check('Address', 'Address is required !').not().isEmpty(),
-    // check('Phonenumber', 'Phone Number is required !').not().isEmpty(),
-    // check('password', 'Password is required !').not().isEmpty(),
-    // check('Role', 'Your Role is required !').not().isEmpty()
-], upload.single('image'), function (req, res) {
+router.post('/driver/register', upload.single('image'), function (req, res) {
 
-    const errors = validationResult(req);
+    // const errors = validationResult(req);
 
-    if (errors.isEmpty()) {
+    
         const Fullname = req.body.Fullname;
         const Address = req.body.Address;
         const Phonenumber = req.body.Phonenumber;
+        const Role = req.body.Role;
         const password = req.body.password;
         const image = "";
         bcryptjs.hash(password, 10, function (err, hash) {
@@ -30,6 +25,7 @@ router.post('/driver/register', [
                 Address: Address,
                 Phonenumber: Phonenumber,
                 image: image,
+                Role: Role,
                 password: hash
             })
             data.save().then(function (result) {
@@ -40,12 +36,58 @@ router.post('/driver/register', [
             })
 
         })
-    }
-    else {
-        // invalid
-        res.send(errors.array());
-    }
+    
 });
+
+router.post('/driver/login', function (req, res) {
+    const Phonenumber = req.body.Phonenumber;
+    const password = req.body.password;
+    Driver.findOne({ Phonenumber: Phonenumber })
+        .then(function (driverData) {
+            if (driverData === null) {
+                // username false
+                console.log("Username doesn't exsit!")
+                return res.status(401).json({ message: "Invalid credentials!!" })
+            }
+            // if username exists
+            bcryptjs.compare(password, driverData.password, function (err, result) {
+                if (result === false) {
+                    // password wrong
+                    console.log("password  Incorrect!")
+                    return res.status(401).json({ message: "Invalid credentials!!" })
+                }
+                // all good
+                console.log("Login Sucessful!")
+                // then generate token - ticket
+                const token = jwt.sign({ driverId: driverData._id }, 'anysecretkey');
+                //  res.send(token)
+                return res.status(200).json({
+
+                    success: true,
+                    token: token,
+                    id: driverData._id
+                })
+            })
+
+        })
+        .catch(function (e) {
+            res.status(500).json({ message: e })
+        })
+
+})
+
+router.get("/driver/single", auth.verifyDriver, function (req, res) {
+    console.log('.')
+    const id = req.driver._id;
+    Driver.findOne({ _id: id }).then(
+        function (data) {
+            res.status(200).json({ success: true, Fullname: data.Fullname, PhoneNumber : data.Phonenumber, Address: data.Address, image: data.image})
+        })
+        .catch(function () {
+            res.status(500).json({ error: e })
+        })
+});
+
 
 router.put('/driver/registration/citizenship',upload.single('image'), function(req,res){
     if (req.file == undefined) {

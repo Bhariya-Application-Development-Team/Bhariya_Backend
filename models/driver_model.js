@@ -31,6 +31,12 @@ const Driver = mongoose.model('Driver',{
     bluebook:{
         type:String,
         default:"empty"
+    },
+    Role:{
+        type: String,
+        required : true,
+        enum: ["Driver", "Admin", "User"],
+        default: "Driver"
     }
 
 });
